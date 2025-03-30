@@ -15,18 +15,17 @@ repository: DontTrustVerifyOrg/apibtc
 
 # Twitter IDs
 twitter:
-  username: "chibicode"
+  username: "apibtc"
 author:
-  twitter: "chibicode"
+  twitter: "apibtc"
 
 # Set default og:image
-# From Unsplash: https://unsplash.com/photos/1_CMoFsPfso
 defaults:
   -
     scope:
       path: ""
     values:
-      image: "static/images/og.jpg"
+      image: "static/images/bloom2.jpg"
 
 # ----------------------------------------------------------------------------
 # Customize Options: Optional

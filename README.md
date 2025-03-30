@@ -1,6 +1,6 @@
 ![](./static/images/bloom2.png)
 
-APIBTC enables easy integration of Bitcoin payments via the Lightning Network directly into your AI applications using simple APIs in Python and JavaScript.
+ApiBTC enables easy integration of Bitcoin payments via the Lightning Network directly into your AI applications using simple APIs in Python and JavaScript.
 
 - **Lightning Fast Payments:** Instant Bitcoin transactions optimized for speed and scalability.
 - **AI-Friendly:** Easily integrate into AI agents and automation scripts.
