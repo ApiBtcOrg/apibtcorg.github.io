@@ -40,7 +40,7 @@ We built APIBTC with the developer experience as our top priority. Here’s what
 *   ⚡ **Truly Instant Payments:** Tap into the Lightning Network's sub-second settlement times and negligible fees. Perfect for micropayments and high-throughput scenarios where traditional finance lags behind.
 *   🤖 **Designed for Automation:** Minimal, predictable functions make integrating payments into complex AI logic, scripts, or backend services a breeze. Think `addinvoice()`, `sendpayment()`, `getinvoice()`. Simple.
 *   💻 **Fluent in Your Language:** Get native, idiomatic libraries for Python and JavaScript – the dominant languages in AI, machine learning, and web development. No awkward wrappers, just clean code.
-*   🌐 **Transparent & Community-Driven:** As fully open-source software ([MIT Licensed](https://github.com/DontTrustVerifyOrg/apibtc/blob/main/LICENSE)), you have complete visibility. Inspect the code, contribute improvements, and join a community building the future of Bitcoin integration.
+*   🌐 **Transparent & Community-Driven:** As fully open-source software ([Apache 2.0 Licensed](https://github.com/DontTrustVerifyOrg/apibtc/blob/main/LICENSE)), you have complete visibility. Inspect the code, contribute improvements, and join a community building the future of Bitcoin integration.
 
 ---
 
@@ -53,6 +53,60 @@ APIBTC isn't just a library; it's an enabler for groundbreaking ideas:
 *   **Self-Sustaining IoT:** Smart devices autonomously paying for their own bandwidth, data storage, or critical firmware updates using earned or allocated Bitcoin.
 *   **High-Frequency Trading Bots:** Automated systems settling trades or paying for real-time data feeds directly over Lightning, minimizing counterparty risk and delays.
 *   **Usage-Based API Billing:** Offering your API with granular, pay-as-you-go pricing, settled instantly without costly payment processor overhead.
+
+---
+
+## Advanced Features: HODL Invoices
+
+APIBTC now supports HODL invoices, a powerful feature that enables escrow-like functionalities in the Lightning Network.
+
+**What are HODL Invoices?**
+
+HODL invoices allow for conditional payments where funds are locked until a specific condition is met. Unlike standard invoices that settle immediately, HODL invoices remain in a pending state until explicitly settled with a preimage.
+
+**Key Benefits:**
+* **Escrow Capabilities:** Create trustless escrow arrangements where funds are only released when predefined conditions are met.
+* **Conditional Payments:** Enable payments that only complete when a specific action occurs or verification is provided.
+* **Enhanced Security:** Add an additional layer of protection for high-value transactions or complex payment scenarios.
+
+**How It Works:**
+1. The recipient creates a HODL invoice with a random or specific hash
+2. The payer sends payment to the HODL invoice
+3. Funds remain locked (but committed) until the recipient reveals the preimage
+4. The recipient settles the invoice by providing the preimage through the SettleInvoice method
+
+**Use Cases:**
+* **Marketplace Escrow:** Hold buyer funds until seller confirms shipment or delivery
+* **Service Completion Verification:** Release payment only when a service is confirmed complete
+* **Multi-stage Transactions:** Enable complex payment flows requiring verification steps
+* **Atomic Swaps:** Facilitate cross-chain cryptocurrency exchanges
+
+---
+
+**API Documentation**
+
+APIBTC provides comprehensive API documentation through [Swagger](https://regtest.apibtc.org/apibtc/swagger/index.html).
+
+**Important Notice:** The API documentation and testing environment operates on Bitcoin's regtest network.
+
+**What is Regtest?**
+
+Regtest (Regression Test Mode) is a local testing environment where developers can create blocks on demand, control the network conditions, and test Bitcoin applications without using real Bitcoin. It's completely isolated from the mainnet and testnet networks.
+
+**⚠️ Warning: Do not send real Bitcoin to any addresses generated in this environment!**
+
+Any real Bitcoin sent to regtest addresses will be lost permanently. The regtest environment is designed exclusively for development and testing purposes.
+
+**Using the Swagger Documentation**
+
+The Swagger UI provides:
+* Interactive documentation for all API endpoints
+* The ability to test API calls directly from your browser
+* Request and response examples
+* Parameter descriptions and requirements
+* Authentication information
+
+This makes it easy to understand the API capabilities before implementing them in your code.
 
 ---
 
@@ -107,23 +161,29 @@ Once installed, initialize the client with your credentials and start interactin
       # Declare API url
       BASE_URL = "API_BASE_URL"
 
-      # Generate private key from mnemonic
-      mnemon = Mnemonic('english')
-      words = mnemon.generate(128)
-      private_key = BIP32Key.fromEntropy(mnemon.to_seed(words)).PrivateKey().hex()
-      print("Mnemonic:", words)
-      print("Private Key:", private_key)
+      # Create two wallets
+      # Wallet 1 - Invoice Creator
+      mnemon1 = Mnemonic('english')
+      words1 = mnemon1.generate(128)
+      private_key1 = BIP32Key.fromEntropy(mnemon1.to_seed(words1)).PrivateKey().hex()
+      wallet1 = Wallet(base_url=BASE_URL, privkey=private_key1)
 
-      wallet_1 = Wallet(base_url=BASE_URL, privkey=private_key)
+      # Wallet 2 - Invoice Payer
+      mnemon2 = Mnemonic('english')
+      words2 = mnemon2.generate(128)
+      private_key2 = BIP32Key.fromEntropy(mnemon2.to_seed(words2)).PrivateKey().hex()
+      wallet2 = Wallet(base_url=BASE_URL, privkey=private_key2)
 
-      # Check wallet balance
-      wallet.getbalance()
+      # Payment flow
+      # Create invoice with wallet1
+      invoice = wallet1.addinvoice(satoshis=1000, memo="Payment from wallet2", expiry=3600)
 
-      # Create new invoice
-      wallet.addinvoice(satoshis=1000, memo="INVOICE_MEMO", expiry=3600)
+      # Pay invoice with wallet2
+      wallet2.sendpayment(paymentrequest=invoice['payment_request'], timeout=30, feelimit=100)
 
-      # Pay invoice
-      wallet.sendpayment(paymentrequest="PAYMENT_REQUEST", timeout=3600, feelimit=1000)
+      # Check balances after payment
+      print("Wallet1 balance:", wallet1.getbalance())
+      print("Wallet2 balance:", wallet2.getbalance())
     </code>
   </pre>
 </details>
@@ -141,25 +201,29 @@ Once installed, initialize the client with your credentials and start interactin
       // Declare API url
       const BASE_URL = "API_BASE_URL";
 
-      // Generate private key from mnemonic
-      const mnemonic = bip39.generateMnemonic(128);
-      const seed = bip39.mnemonicToSeedSync(mnemonic);
-      const hdNode = hdkey.fromMasterSeed(seed);
-      const privateKey = hdNode.privateKey.toString('hex');
-      console.log("Mnemonic:", mnemonic);
-      console.log("Private Key:", privateKey);
+      // Create two wallets
+      // Wallet 1 - Invoice Creator
+      const mnemonic1 = bip39.generateMnemonic(128);
+      const seed1 = bip39.mnemonicToSeedSync(mnemonic1);
+      const privateKey1 = hdkey.fromMasterSeed(seed1).privateKey.toString('hex');
+      const wallet1 = new Wallet(BASE_URL, privateKey1);
 
-      // Create wallet instance
-      const wallet = new Wallet(BASE_URL, privateKey);
+      // Wallet 2 - Invoice Payer
+      const mnemonic2 = bip39.generateMnemonic(128);
+      const seed2 = bip39.mnemonicToSeedSync(mnemonic2);
+      const privateKey2 = hdkey.fromMasterSeed(seed2).privateKey.toString('hex');
+      const wallet2 = new Wallet(BASE_URL, privateKey2);
 
-      // Check wallet balance
-      wallet.getBalance();
-
-      // Create new invoice
-      wallet.addInvoice(1000, "INVOICE_MEMO", 3600);
-
-      // Pay invoice
-      wallet.sendPayment("PAYMENT_REQUEST", 3600, 1000);
+      // Payment flow
+      // Create invoice with wallet1
+      const invoice = await wallet1.addinvoice(1000, "Payment from wallet2", 3600);
+      
+      // Pay invoice with wallet2
+      await wallet2.sendpayment(invoice.paymentRequest, 30, 100);
+      
+      // Check balances after payment
+      console.log("Wallet1 balance:", await wallet1.getbalance());
+      console.log("Wallet2 balance:", await wallet2.getbalance());
     </code>
   </pre>
 </details>
@@ -181,24 +245,29 @@ Once installed, initialize the client with your credentials and start interactin
               // Declare API url
               const string BASE_URL = "API_BASE_URL";
               
-              // Generate private key from mnemonic
-              Mnemonic mnemonic = new Mnemonic(Wordlist.English, WordCount.Twelve);
-              ExtKey hdRoot = mnemonic.DeriveExtKey();
-              string privateKey = hdRoot.PrivateKey.ToHex();
-              Console.WriteLine($"Mnemonic: {mnemonic}");
-              Console.WriteLine($"Private Key: {privateKey}");
+              // Create two wallets
+              // Wallet 1 - Invoice Creator
+              Mnemonic mnemonic1 = new Mnemonic(Wordlist.English, WordCount.Twelve);
+              ExtKey hdRoot1 = mnemonic1.DeriveExtKey();
+              string privateKey1 = hdRoot1.PrivateKey.ToHex();
+              var wallet1 = new Wallet(BASE_URL, privateKey1);
               
-              // Create wallet instance
-              var wallet = new Wallet(BASE_URL, privateKey);
+              // Wallet 2 - Invoice Payer
+              Mnemonic mnemonic2 = new Mnemonic(Wordlist.English, WordCount.Twelve);
+              ExtKey hdRoot2 = mnemonic2.DeriveExtKey();
+              string privateKey2 = hdRoot2.PrivateKey.ToHex();
+              var wallet2 = new Wallet(BASE_URL, privateKey2);
               
-              // Check wallet balance
-              wallet.GetBalance();
+              // Payment flow
+              // Create invoice with wallet1
+              var invoice = await wallet1.AddInvoice(1000, "Payment from wallet2", 3600);
               
-              // Create new invoice
-              wallet.AddInvoice(1000, "INVOICE_MEMO", 3600);
+              // Pay invoice with wallet2
+              await wallet2.SendPayment(invoice.PaymentRequest, 30, 100);
               
-              // Pay invoice
-              wallet.SendPayment("PAYMENT_REQUEST", 3600, 1000);
+              // Check balances after payment
+              Console.WriteLine($"Wallet1 balance: {await wallet1.GetBalance()}");
+              Console.WriteLine($"Wallet2 balance: {await wallet2.GetBalance()}");
           }
       }
     </code>
