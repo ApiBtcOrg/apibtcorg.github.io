@@ -40,6 +40,8 @@ We built APIBTC with the developer experience as our top priority. Here’s what
 *   ⚡ **Truly Instant Payments:** Tap into the Lightning Network's sub-second settlement times and negligible fees. Perfect for micropayments and high-throughput scenarios where traditional finance lags behind.
 *   🤖 **Designed for Automation:** Minimal, predictable functions make integrating payments into complex AI logic, scripts, or backend services a breeze. Think `addinvoice()`, `sendpayment()`, `getinvoice()`. Simple.
 *   💻 **Fluent in Your Language:** Get native, idiomatic libraries for Python and JavaScript – the dominant languages in AI, machine learning, and web development. No awkward wrappers, just clean code.
+*   🚀 **One-Click Deployment:** Get the full stack running instantly with a single Docker container. No complex setup, no dependency management – just pull the image and you're ready to build.
+*   🔑 **Truly Permissionless:** No account creation, no KYC, no approval process. Simply generate a private key locally and start using the API immediately. True to Bitcoin's core principles.
 *   🌐 **Transparent & Community-Driven:** As fully open-source software ([Apache 2.0 Licensed](https://github.com/DontTrustVerifyOrg/apibtc/blob/main/LICENSE)), you have complete visibility. Inspect the code, contribute improvements, and join a community building the future of Bitcoin integration.
 
 ---
