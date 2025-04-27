@@ -25,6 +25,8 @@
     <link rel="stylesheet" href="{{ "/static/app.css" | relative_url }}">
     <link rel="shortcut icon" href="{{ "/favicon.ico" | relative_url }}" />
     {% seo %}
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+    
   </head>
   <body>
     <main class="measure-wide center ph3 pt5 pb6">
@@ -153,5 +155,42 @@
 
       return t;
     }(document, "script", "twitter-wjs"));</script>
-  </body>
+
+<script>
+  var config = {
+      startOnLoad:true,
+      theme: 'base',
+      themeVariables: {
+        activationBorderColor:'#000',
+        activationBkgColor:'#F00',
+
+        primaryColor: '#FFF',
+        primaryTextColor: '#000',
+        primaryBorderColor: '#000',
+        secondaryColor: '#FFF',
+        secondaryTextColor: '#000',
+        secondaryBorderColor: '#000',
+        tertiaryColor: '#FFF',
+        tertiaryTextColor: '#000',
+        tertiaryBorderColor: '#000',
+ 
+        lineColor: '#000',
+        
+        noteBkgColor:'#FFF',
+        noteTextColor:'#000',
+        noteBorderColor:'#000',
+
+        labelBoxBorderColor:'#F00',
+        background:'#FFF',
+      },
+      flowchart:{
+              useMaxWidth:false,
+              htmlLabels:true,
+          }
+  };
+  mermaid.initialize(config);
+  window.mermaid.init(undefined, document.querySelectorAll('.language-mermaid'));
+  </script>
+
+</body>
 </html>

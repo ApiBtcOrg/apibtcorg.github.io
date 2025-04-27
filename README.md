@@ -117,7 +117,7 @@ This makes it easy to understand the API capabilities before implementing them i
 Watch how an AI agent can seamlessly interact with the Bitcoin Lightning Network using APIBTC:
 
 <video width="100%" controls>
-  <source src="./static/videos/agent.mp4" type="video/mp4">
+  <source src="/static/videos/agent.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
