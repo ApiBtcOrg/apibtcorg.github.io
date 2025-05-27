@@ -15,9 +15,9 @@ repository: DontTrustVerifyOrg/apibtc
 
 # Twitter IDs
 twitter:
-  username: "apibtc"
+  username: "the_hyperlabs"
 author:
-  twitter: "apibtc"
+  twitter: "the_hyperlabs"
 
 # Set default og:image
 defaults:
