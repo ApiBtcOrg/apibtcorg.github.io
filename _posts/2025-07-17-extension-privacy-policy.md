@@ -4,13 +4,13 @@
 
 ### **1. Introduction**
 
-The API BTC Schnorr Signer extension ("the extension") securely stores your Bitcoin private key within your browser and provides a sandboxed Schnorr signing function for websites integrating with APIBTC.org. This policy outlines clearly how the extension handles your data.
+The APIBTC Schnorr Signer extension ("the extension") securely stores your APIBTC private key within your browser and provides a sandboxed Schnorr signing function for websites integrating with APIBTC. This policy outlines clearly how the extension handles your data.
 
 ### **2. Data Collection and Usage**
 
 **Private Key:**
 
-* Your Bitcoin private key is securely stored locally in Chrome’s built-in storage.
+* Your APIBTC private key is securely stored locally in Chrome’s built-in storage.
 * Your private key **never leaves your browser**.
 * The extension does **not transmit or share** your private key or any related data with external parties.
 
